@@ -19,7 +19,7 @@ public class Jokenpo {
         System.out.println("2 - Jogador VS Máquina");
         typeGame = in.nextInt();
 
-        String playerOne;
+        String PlayerTwo;
         String playerTwo;
 
         String[] list = {"Pedra", "Papel", "Tesoura"};
@@ -32,7 +32,7 @@ public class Jokenpo {
                 System.out.println(" ");
 
                 System.out.println("Jogado 1");
-                playerOne = s.nextLine().toLowerCase();
+                PlayerTwo = s.nextLine().toLowerCase();
 
                 System.out.println("Jogador 2");
                 playerTwo = s.nextLine().toLowerCase();
@@ -42,7 +42,7 @@ public class Jokenpo {
                     newGame = i.nextInt();
 
 
-                    switch (playerOne) {
+                    switch (PlayerTwo) {
                         case "pedra":
                             switch (playerTwo) {
                                 case "pedra":
@@ -102,7 +102,7 @@ public class Jokenpo {
                             }
                             break;
                         default:
-                            if (playerOne.equals("")) {
+                            if (PlayerTwo.equals("")) {
                                 System.out.println("Jogador dois preencha correto e jogue de novo");
                             }
                     }
@@ -113,11 +113,11 @@ public class Jokenpo {
                 System.out.println("Jogador VS Máquina");
                 System.out.println("Esolha: Pedra, Papel ou Tesoura");
                 System.out.println("Jogador 1");
-                playerOne = s.nextLine().toLowerCase();
+                PlayerTwo = s.nextLine().toLowerCase();
 
                 int index = random.nextInt(list.length);
 
-                switch (playerOne) {
+                switch (PlayerTwo) {
                     case "pedra":
                         String a = list[index];
                         System.out.println(a);

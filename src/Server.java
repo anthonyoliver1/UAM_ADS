@@ -8,6 +8,7 @@ public class Server {
 
     static DatagramSocket serverSocket;
     static DatagramPacket PlayerOnePacket;
+    static DatagramPacket PlayerTwoPacket;
 
     public Server() {
         try {
@@ -24,72 +25,133 @@ public class Server {
         byte[] messageReceived = new byte[1024];
         byte[] messageSend = new byte[1024];
 
+        byte[] messageReceivedP2 = new byte[1024];
+        byte[] messageSendP2 = new byte[1024];
+
         String[] list = {"Pedra", "Papel", "Tesoura"};
 
         Random random = new Random();
         int index = random.nextInt(list.length);
-
+        int empate = 0;
+        int derrota = 0;
+        int vitoria = 0;
 
         new Server();
 
         while (true) {
-            PlayerOnePacket = new DatagramPacket(messageReceived, messageReceived.length);
 
+
+            PlayerOnePacket = new DatagramPacket(messageReceived, messageReceived.length);
+            PlayerTwoPacket = new DatagramPacket(messageReceivedP2, messageReceivedP2.length);
+
+            serverSocket.receive(PlayerTwoPacket);
             serverSocket.receive(PlayerOnePacket);
 
-            String textReceived = new String(PlayerOnePacket.getData());
-            System.out.println("Você escolheu " + textReceived.trim());
+            String textReceivedP1 = new String(PlayerOnePacket.getData());
+            System.out.println("P1 - Você escolheu " + textReceivedP1.trim());
 
-            InetAddress IPAddress = PlayerOnePacket.getAddress();
-            int porta = PlayerOnePacket.getPort();
+            String textReceived = new String(PlayerTwoPacket.getData());
+            System.out.println("P2 - Você escolheu " + textReceived.trim());
 
-            String textSend = "Escolhido " + textReceived.trim();
-            messageSend = textSend.getBytes();
+
+            InetAddress IPAddressP1 = PlayerOnePacket.getAddress();
+            int portaP1 = PlayerOnePacket.getPort();
+
+            InetAddress IPAddress = PlayerTwoPacket.getAddress();
+            int porta = PlayerTwoPacket.getPort();
+
+
+            int[] myIntArray = new int[2];
+            myIntArray[1] = empate;
 
             System.out.println(textReceived);
-            switch (textReceived.trim().toLowerCase(Locale.ROOT)) {
-                case "pedra":
-                    String a = list[index];
-                    System.out.println(a);
 
-                    if (a.equals("Pedra")) {
-                        System.out.println("Empatou");
-                    } else if (a.equals("Papel")) {
-                        System.out.println("Máquina Venceu");
-                    } else {
-                        System.out.println("jogado 1 Venceu");
-                    }
-                    break;
-                case "papel":
-                    String b = list[index];
-                    System.out.println(b);
+            if(textReceived.trim().equals("true")){
+                System.out.println("P2 Iniciado");
+            } else {
+                System.out.println("FOI SWITCH");
 
-                    if (b.equals("Papel")) {
-                        System.out.println("Empatou");
-                    } else if (b.equals("Tesoura")) {
-                        System.out.println("Máquina Venceu");
-                    } else {
-                        System.out.println("Jogador 1 Venceu");
-                    }
-                    break;
-                case "tesoura":
-                    String c = list[index];
-                    System.out.println(c);
+                switch (textReceived.trim().toLowerCase(Locale.ROOT)) {
 
-                    if (c.equals("Tesoura")) {
-                        System.out.println("Empatou");
-                    } else if (c.equals("Pedra")) {
-                        System.out.println("Máquina Venceu");
-                    } else {
-                        System.out.println("Jogador 1 Venceu");
-                    }
-                    break;
-                default:
-                    System.out.println("Opção Inválida");
+                    case "pedra":
+                        String a = list[index];
+                        System.out.println(a + "P1");
 
+                        if (a.equals("Pedra")) {
+                            String textSend = "Empate " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            empate += 1;
+                            System.out.println(empate + " EMPATOU ");
+
+                        } else if (a.equals("Papel")) {
+                            String textSend = "Eu venci " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            derrota += 1;
+                            System.out.println(derrota + "DERROTA");
+
+                        } else {
+                            String textSend = "Voce venceu " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            System.out.println(vitoria);
+                            vitoria += 1;
+                            System.out.println(vitoria + "VICTORIA");
+                        }
+                        break;
+                    case "papel":
+                        String b = list[index];
+                        System.out.println(b + "P1");
+
+                        if (b.equals("Papel")) {
+                            String textSend = "Empate " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            empate += 1;
+
+                        } else if (b.equals("Tesoura")) {
+                            String textSend = "Eu venci " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            derrota += 1;
+                            System.out.println(derrota + "DERROTA");
+
+                        } else {
+                            String textSend = "Voce venceu " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            System.out.println(vitoria);
+                            vitoria += 1;
+                            System.out.println(vitoria + "VICTORIA");
+                        }
+                        break;
+                    case "tesoura":
+                        String c = list[index];
+                        System.out.println(c + "P1");
+
+                        if (c.equals("Tesoura")) {
+                            String textSend = "Empate " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            empate += 1;
+
+                        } else if (c.equals("Pedra")) {
+                            String textSend = "Eu venci " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            derrota += 1;
+                            System.out.println(derrota + "DERROTA");
+
+                        } else {
+                            String textSend = "Voce venceu " + textReceived.trim();
+                            messageSend = textSend.getBytes();
+                            System.out.println(vitoria);
+                            vitoria += 1;
+                            System.out.println(vitoria + "VICTORIA");
+                        }
+                        break;
+                    default:
+                        System.out.println("Opção Inválida");
+
+                }
             }
+            DatagramPacket sendP1 = new DatagramPacket(messageSend, messageSend.length, IPAddressP1, portaP1);
+            serverSocket.send(sendP1);
 
-            DatagramPacket send = new DatagramPacket(messageSend, messageSend.length, IPAddress, porta);
+            DatagramPacket send = new DatagramPacket(messageSendP2, messageSendP2.length, IPAddress, porta);
             serverSocket.send(send);
         }
     }
