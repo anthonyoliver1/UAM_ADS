@@ -7,8 +7,7 @@ import java.util.Random;
 public class Server {
 
     static DatagramSocket serverSocket;
-    static DatagramPacket PlayerOnePacket;
-    static DatagramPacket PlayerTwoPacket;
+    static DatagramPacket PlayerPacket;
 
     public Server() {
         try {
@@ -25,9 +24,6 @@ public class Server {
         byte[] messageReceived = new byte[1024];
         byte[] messageSend = new byte[1024];
 
-        byte[] messageReceivedP2 = new byte[1024];
-        byte[] messageSendP2 = new byte[1024];
-
         String[] list = {"Pedra", "Papel", "Tesoura"};
 
         Random random = new Random();
@@ -39,26 +35,15 @@ public class Server {
         new Server();
 
         while (true) {
+            PlayerPacket = new DatagramPacket(messageReceived, messageReceived.length);
 
+            serverSocket.receive(PlayerPacket);
 
-            PlayerOnePacket = new DatagramPacket(messageReceived, messageReceived.length);
-            PlayerTwoPacket = new DatagramPacket(messageReceivedP2, messageReceivedP2.length);
+            String textReceived = new String(PlayerPacket.getData());
+            System.out.println("P1 - Você escolheu " + textReceived.trim());
 
-            serverSocket.receive(PlayerTwoPacket);
-            serverSocket.receive(PlayerOnePacket);
-
-            String textReceivedP1 = new String(PlayerOnePacket.getData());
-            System.out.println("P1 - Você escolheu " + textReceivedP1.trim());
-
-            String textReceived = new String(PlayerTwoPacket.getData());
-            System.out.println("P2 - Você escolheu " + textReceived.trim());
-
-
-            InetAddress IPAddressP1 = PlayerOnePacket.getAddress();
-            int portaP1 = PlayerOnePacket.getPort();
-
-            InetAddress IPAddress = PlayerTwoPacket.getAddress();
-            int porta = PlayerTwoPacket.getPort();
+            InetAddress IPAddress = PlayerPacket.getAddress();
+            int porta = PlayerPacket.getPort();
 
 
             int[] myIntArray = new int[2];
@@ -148,10 +133,7 @@ public class Server {
 
                 }
             }
-            DatagramPacket sendP1 = new DatagramPacket(messageSend, messageSend.length, IPAddressP1, portaP1);
-            serverSocket.send(sendP1);
-
-            DatagramPacket send = new DatagramPacket(messageSendP2, messageSendP2.length, IPAddress, porta);
+            DatagramPacket send = new DatagramPacket(messageSend, messageSend.length, IPAddress, porta);
             serverSocket.send(send);
         }
     }
