@@ -26,19 +26,17 @@ public class Player {
         byte[] sendData = new byte[1024];
         byte[] receiveData = new byte[1024];
 
-        System.out.println("Como que jogar?");
-        System.out.println("1 - Jogador vs Jogador");
-        System.out.println("2 - Máquina vs Jogador");
-        System.out.print("Escolha: ");
-        int value = in.nextInt();
+        System.out.print("Digite o seu nome: ");
+        String player = in.nextLine();
+        boolean again = true;
+        int empate = 0;
+        int derrota = 0;
+        int vitoria = 0;
 
-        if(value == 1){
-
-        }
-        else if (value == 2) {
-            System.out.println("Máquina vs Jogador Selecionado");
-            System.out.println();
-            System.out.println("Vamos jogar ");
+        System.out.println();
+        System.out.println("Vamos jogar " + player);
+        while (again) {
+            System.out.println("Escolha :");
             System.out.println("Pedra - Papel - Tesoura");
             System.out.print("Escolha: ");
             String textoAEnviar = entradaUsuario.readLine();
@@ -47,6 +45,7 @@ public class Player {
             sendData = textoAEnviar.getBytes();
 
             new Player();
+
             DatagramPacket pacoteEnvio = new DatagramPacket(sendData, sendData.length, enderecoIP, 9876);
             PlayerPacket.send(pacoteEnvio);
 
@@ -55,7 +54,35 @@ public class Player {
 
             String textReceived = new String(pacoteRecebido.getData());
             System.out.println("jokenpô: " + textReceived.trim());
-            PlayerPacket.close();
+            if(textReceived.trim().contains("empate")){
+                empate += 1;
+            }else if(textReceived.trim().contains("derrota")){
+                derrota += 1;
+            }else if(textReceived.trim().contains("vitoria")){
+                vitoria += 1;
+            }
+
+            System.out.println("Jogar novamente?");
+            String newGame = in.nextLine();
+            if (newGame.equals("sim")) {
+                again = true;
+            } else {
+                System.out.println("Quer ver o placar?");
+                String placar = in.nextLine();
+                if(placar.equals("sim")){
+                    System.out.println("teve "+ empate + " empate(s)");
+                    System.out.println("teve "+ derrota + " derrota(s)");
+                    System.out.println("teve "+ vitoria + " vitoria(s)");
+                    System.out.println();
+                    System.out.println("Até a próxima :) " + player);
+                    again = false;
+
+                }else {
+                    System.out.println("Até a próxima :) " + player);
+                    again = false;
+                }
+            }
         }
+        PlayerPacket.close();
     }
 }
